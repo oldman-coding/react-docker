@@ -4,12 +4,29 @@ version: 2.1
 
 orbs:
   node: circleci/node@4.1
+  docker: circleci/docker@1.6.0
+jobs:
+  build-and-push:
+    executor: docker/docker
+    steps:
+      - setup_remote_docker
+      - checkout
+      - docker/check
+      - docker/build:
+          image: my_repo/orb-test
+      - docker/push:
+          digest-path: /tmp/digest.txt
+          image: my_repo/orb-test
+      - run:
+          command: |
+            echo "Digest is: $(</tmp/digest.txt)"
 
 workflows:
-  sample:
+  my-pipeline:
     jobs:
       - node/test:
           version: '15.1'
+      - build-and-push
           # This is the node version to use for the `cimg/node` tag
           # Relevant tags can be found on the CircleCI Developer Hub
           # https://circleci.com/developer/images/image/cimg/node
