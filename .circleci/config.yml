@@ -31,7 +31,8 @@ jobs:
 workflows:
   my-pipeline:
     jobs:
-      - node/test
+      - node/test: 
+          version: "15.1"
       - build-and-push: 
           requires: 
             - node/test
