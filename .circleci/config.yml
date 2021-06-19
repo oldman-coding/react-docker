@@ -7,7 +7,7 @@ orbs:
   docker: circleci/docker@1.6.0
 jobs:
   build-and-push:
-    enverionment: 
+    environment: 
       DOCKER_IMAGE: 123410349190/react-docker
       DOCKER_TAG: latest
     executor: docker/docker
