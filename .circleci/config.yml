@@ -7,16 +7,23 @@ orbs:
   docker: circleci/docker@1.6.0
 jobs:
   build-and-push:
+    enverionment: 
+      DOCKER_IMAGE: 123410349190/react-docker
+      DOCKER_TAG: latest
     executor: docker/docker
     steps:
       - setup_remote_docker
       - checkout
       - docker/check
+          docker_username: DOCKER_USER
+          docker_password: DOCKER_PASSWORD
       - docker/build:
-          image: my_repo/orb-test
+          image: $DOCKER_IMAGE
+          tag: $DOCKER_TAG
       - docker/push:
           digest-path: /tmp/digest.txt
-          image: my_repo/orb-test
+          image: $DOCKER_IMAGE
+          tag: $DOCKER_TAG
       - run:
           command: |
             echo "Digest is: $(</tmp/digest.txt)"
@@ -24,9 +31,15 @@ jobs:
 workflows:
   my-pipeline:
     jobs:
-      - node/test:
-          version: '15.1'
+      - node/test
       - build-and-push
+          filters: 
+            requires: 
+              - node/test
+            branches: 
+              only: 
+                - master
+        
           # This is the node version to use for the `cimg/node` tag
           # Relevant tags can be found on the CircleCI Developer Hub
           # https://circleci.com/developer/images/image/cimg/node
