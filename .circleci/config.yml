@@ -29,6 +29,13 @@ jobs:
       - run:
           command: |
             echo "Digest is: $(</tmp/digest.txt)"
+  deploy: 
+    executor: docker/docker 
+    steps: 
+      - add_ssh_keys: 
+          fingerprints: 
+            - "9d:91:04:bb:32:30:2c:ee:c3:3c:d8:e5:92:0b:e5:d5"
+      - run: ssh -oStrictHostKeyChecking=no -v ubuntu@3.1.180.235/react-docker '.deploy.sh'
 
 workflows:
   my-pipeline:
@@ -42,6 +49,9 @@ workflows:
             branches: 
               only: 
                 - master
+      - deploy: 
+          requires: build-and-push
+
         
           # This is the node version to use for the `cimg/node` tag
           # Relevant tags can be found on the CircleCI Developer Hub
