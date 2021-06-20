@@ -50,7 +50,8 @@ workflows:
               only: 
                 - master
       - deploy: 
-          requires: build-and-push
+          requires: 
+            - build-and-push
 
         
           # This is the node version to use for the `cimg/node` tag
